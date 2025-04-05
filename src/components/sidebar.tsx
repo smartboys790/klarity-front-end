@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Code, 
   PenBox, 
@@ -11,7 +11,8 @@ import {
   Settings, 
   AlertCircle, 
   HelpCircle, 
-  LogOut 
+  LogOut,
+  MessageSquare 
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -22,13 +23,39 @@ import { SettingsDialog } from "./settings-dialog";
 import { HelpDialog } from "./help-dialog";
 import { PremiumDialog } from "./premium-dialog";
 import { ReportBugDialog } from "./report-bug-dialog";
+import { createSpace, getSpaces } from "@/services/chat-service";
+import { useToast } from "@/hooks/use-toast";
 
 export function Sidebar() {
   const [journalsOpen, setJournalsOpen] = useState(true);
   const [spacesOpen, setSpacesOpen] = useState(true);
+  const [spaces, setSpaces] = useState<Array<{ id: string; name: string }>>([]);
   const isMobile = useIsMobile();
   
   const [dialogOpen, setDialogOpen] = useState<string | null>(null);
+  const { toast } = useToast();
+  
+  // Load spaces on mount
+  useEffect(() => {
+    loadSpaces();
+  }, []);
+  
+  const loadSpaces = () => {
+    const loadedSpaces = getSpaces();
+    setSpaces(loadedSpaces.map(space => ({ id: space.id, name: space.name })));
+  };
+  
+  const handleCreateSpace = () => {
+    const spaceName = prompt('Enter space name:');
+    if (spaceName) {
+      createSpace(spaceName);
+      loadSpaces();
+      toast({
+        title: "Space Created",
+        description: `Space "${spaceName}" has been created.`,
+      });
+    }
+  };
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -83,19 +110,29 @@ export function Sidebar() {
           onClick={() => setSpacesOpen(!spacesOpen)}
         >
           <span className="font-medium text-sm text-gray-500 dark:text-gray-400">SPACES</span>
-          {spacesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          <div className="flex items-center">
+            <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" onClick={(e) => { e.stopPropagation(); handleCreateSpace(); }}>
+              <Plus size={12} />
+            </Button>
+            {spacesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          </div>
         </div>
         {spacesOpen && (
-          <div className="mt-2 pl-2 space-y-1">
-            {["t", "tst", "t", "te", "testtt", "sp"].map((space, index) => (
-              <div 
-                key={index}
-                className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
-              >
-                <PenBox size={14} />
-                <span>{space}</span>
-              </div>
-            ))}
+          <div className="mt-2 pl-2 space-y-1 max-h-[200px] overflow-y-auto">
+            {spaces.length === 0 ? (
+              <div className="text-sm text-muted-foreground p-2">No spaces yet</div>
+            ) : (
+              spaces.map((space) => (
+                <Link
+                  key={space.id}
+                  to="/"
+                  className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                >
+                  <MessageSquare size={14} />
+                  <span className="truncate">{space.name}</span>
+                </Link>
+              ))
+            )}
           </div>
         )}
       </div>
