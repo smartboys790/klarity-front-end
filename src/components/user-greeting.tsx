@@ -1,17 +1,27 @@
 
 import React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface UserGreetingProps {
   username: string;
 }
 
 export function UserGreeting({ username }: UserGreetingProps) {
+  const isMobile = useIsMobile();
+  
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Happy Late Night';
+  };
+  
   return (
-    <div className="flex flex-col items-center justify-center mt-6">
-      <div className="mb-4">
+    <div className="flex flex-col items-center justify-center mt-4 md:mt-6">
+      <div className="mb-3 md:mb-4">
         <svg 
-          width="80" 
-          height="80" 
+          width={isMobile ? "60" : "80"} 
+          height={isMobile ? "60" : "80"} 
           viewBox="0 0 80 80" 
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
@@ -25,8 +35,8 @@ export function UserGreeting({ username }: UserGreetingProps) {
           />
         </svg>
       </div>
-      <h1 className="text-3xl font-mono tracking-wide">
-        Happy Late Night, {username}
+      <h1 className={`${isMobile ? 'text-xl' : 'text-3xl'} font-mono tracking-wide text-center`}>
+        {getGreeting()}, {username}
       </h1>
     </div>
   );

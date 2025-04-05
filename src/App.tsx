@@ -8,6 +8,8 @@ import { ThemeProvider } from "./components/theme-provider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { UserHeader } from "./components/user-header";
+import JournalsPage from "./pages/JournalsPage";
+import CanvasPage from "./pages/CanvasPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,8 @@ const App = () => (
           <UserHeader />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/journals" element={<JournalsPage />} />
+            <Route path="/canvas" element={<CanvasPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
