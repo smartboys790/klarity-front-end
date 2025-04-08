@@ -1,3 +1,4 @@
+
 import { ChatSpace, ChatMessage, Canvas, Journal } from "../models/chat";
 
 // Local storage keys
@@ -233,5 +234,5 @@ export const getAiResponse = async (message: string): Promise<string> => {
     " (This is a simulated AI response to: " + message + ")";
 };
 
-// Make sure Journal is properly exported
+// Export Journal interface
 export type { Journal };

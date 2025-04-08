@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Journal, saveJournal, getJournals, deleteJournal, getJournal } from "@/services/chat-service";
+import { saveJournal, getJournals, deleteJournal, getJournal } from "@/services/chat-service";
+import type { Journal } from "@/services/chat-service";
 import { Save, X, Edit, Trash2, Clock } from "lucide-react";
 
 const JournalsPage = () => {
