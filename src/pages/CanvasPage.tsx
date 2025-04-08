@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Sidebar } from "@/components/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -8,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { saveCanvas, getSpaces } from "@/services/chat-service";
 import { useToast } from "@/hooks/use-toast";
 import { Save } from "lucide-react";
+
 const CanvasPage = () => {
   const isMobile = useIsMobile();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,9 +25,8 @@ const CanvasPage = () => {
     name: string;
   }>>([]);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -55,6 +56,7 @@ const CanvasPage = () => {
       window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
+  
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
     const canvas = canvasRef.current;
@@ -71,6 +73,7 @@ const CanvasPage = () => {
     setLastX(clientX - rect.left);
     setLastY(clientY - rect.top);
   };
+  
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     const canvas = canvasRef.current;
@@ -100,9 +103,11 @@ const CanvasPage = () => {
     setLastX(x);
     setLastY(y);
   };
+  
   const stopDrawing = () => {
-    setIsLoading(false);
+    setIsDrawing(false);
   };
+  
   const handleSaveCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -123,6 +128,7 @@ const CanvasPage = () => {
       });
     }
   };
+  
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -131,6 +137,7 @@ const CanvasPage = () => {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
+
   return <div className="flex min-h-screen bg-background">
       <Sidebar />
       <main className={`flex-1 p-4 md:p-10 ${isMobile ? 'pt-16' : ''}`}>
@@ -192,4 +199,5 @@ const CanvasPage = () => {
       </main>
     </div>;
 };
+
 export default CanvasPage;

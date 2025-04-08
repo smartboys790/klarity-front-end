@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Sidebar } from "@/components/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,11 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Journal, saveJournal, getJournals, deleteJournal } from "@/services/chat-service";
+import { Journal, saveJournal, getJournals, deleteJournal, getJournal } from "@/services/chat-service";
 import { Save, X, Edit, Trash2, Clock } from "lucide-react";
 
 const JournalsPage = () => {
   const isMobile = useIsMobile();
+  const location = useLocation();
   const [title, setTitle] = useState('Untitled Entry');
   const [content, setContent] = useState('');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -22,7 +24,19 @@ const JournalsPage = () => {
   // Load journals on mount
   useEffect(() => {
     loadJournals();
-  }, []);
+    
+    // Handle navigation state
+    const { activeJournalId, createNew } = location.state || {};
+    
+    if (activeJournalId) {
+      const journal = getJournal(activeJournalId);
+      if (journal) {
+        handleEditJournal(journal);
+      }
+    } else if (createNew) {
+      handleNewJournal();
+    }
+  }, [location.state]);
   
   const loadJournals = () => {
     const loadedJournals = getJournals();
@@ -33,14 +47,14 @@ const JournalsPage = () => {
   useEffect(() => {
     const saveTimeout = setTimeout(() => {
       if (content && content.trim().length > 0 && editingJournal) {
-        handleSaveJournal();
+        handleSaveJournal(false);
       }
     }, 2000);
     
     return () => clearTimeout(saveTimeout);
   }, [content, editingJournal]);
   
-  const handleSaveJournal = () => {
+  const handleSaveJournal = (showToast = true) => {
     if (!title.trim()) {
       toast({
         title: "Error",
@@ -53,9 +67,9 @@ const JournalsPage = () => {
     try {
       const savedJournal = saveJournal(title, content);
       setLastSaved(savedJournal.updatedAt);
+      setEditingJournal(savedJournal);
       
-      // If we're not currently editing a journal, reset the form
-      if (!editingJournal) {
+      if (showToast) {
         toast({
           title: "Journal Saved",
           description: "Your journal entry has been saved successfully.",
@@ -187,7 +201,7 @@ const JournalsPage = () => {
           </div>
           
           <div className="flex justify-end mb-8">
-            <Button onClick={handleSaveJournal}>
+            <Button onClick={() => handleSaveJournal(true)}>
               <Save className="mr-2 h-4 w-4" />
               {editingJournal ? 'Update Journal' : 'Save Journal'}
             </Button>

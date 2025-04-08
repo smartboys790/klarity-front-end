@@ -12,37 +12,48 @@ import {
   AlertCircle, 
   HelpCircle, 
   LogOut,
-  MessageSquare 
+  MessageSquare, 
+  FileText,
+  Image
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dialog } from "@/components/ui/dialog";
 import { SettingsDialog } from "./settings-dialog";
 import { HelpDialog } from "./help-dialog";
 import { PremiumDialog } from "./premium-dialog";
 import { ReportBugDialog } from "./report-bug-dialog";
-import { createSpace, getSpaces } from "@/services/chat-service";
+import { createSpace, getSpaces, getJournals } from "@/services/chat-service";
 import { useToast } from "@/hooks/use-toast";
+import { Journal } from "@/models/chat";
 
 export function Sidebar() {
   const [journalsOpen, setJournalsOpen] = useState(true);
   const [spacesOpen, setSpacesOpen] = useState(true);
   const [spaces, setSpaces] = useState<Array<{ id: string; name: string }>>([]);
+  const [journals, setJournals] = useState<Journal[]>([]);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   
   const [dialogOpen, setDialogOpen] = useState<string | null>(null);
   const { toast } = useToast();
   
-  // Load spaces on mount
+  // Load spaces and journals on mount
   useEffect(() => {
     loadSpaces();
+    loadJournals();
   }, []);
   
   const loadSpaces = () => {
     const loadedSpaces = getSpaces();
     setSpaces(loadedSpaces.map(space => ({ id: space.id, name: space.name })));
+  };
+  
+  const loadJournals = () => {
+    const loadedJournals = getJournals();
+    setJournals(loadedJournals);
   };
   
   const handleCreateSpace = () => {
@@ -55,6 +66,15 @@ export function Sidebar() {
         description: `Space "${spaceName}" has been created.`,
       });
     }
+  };
+  
+  const handleNavigateToSpace = (spaceId: string) => {
+    // Navigate to the index page with the space ID
+    navigate('/', { state: { activeSpaceId: spaceId } });
+  };
+  
+  const handleNavigateToJournal = (journalId: string) => {
+    navigate('/journals', { state: { activeJournalId: journalId } });
   };
 
   const SidebarContent = () => (
@@ -92,14 +112,37 @@ export function Sidebar() {
           onClick={() => setJournalsOpen(!journalsOpen)}
         >
           <span className="font-medium text-sm text-gray-500 dark:text-gray-400">JOURNALS</span>
-          {journalsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          <div className="flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-5 w-5 rounded-full" 
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                navigate('/journals', { state: { createNew: true } }); 
+              }}
+            >
+              <Plus size={12} />
+            </Button>
+            {journalsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          </div>
         </div>
         {journalsOpen && (
-          <div className="mt-2 pl-2">
+          <div className="mt-2 pl-2 space-y-1 max-h-[150px] overflow-y-auto">
             <Link to="/journals" className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer">
               <Plus size={14} />
               <span>Create Journal</span>
             </Link>
+            {journals.map((journal) => (
+              <div
+                key={journal.id}
+                className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                onClick={() => handleNavigateToJournal(journal.id)}
+              >
+                <FileText size={14} />
+                <span className="truncate flex-1">{journal.title}</span>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -123,14 +166,14 @@ export function Sidebar() {
               <div className="text-sm text-muted-foreground p-2">No spaces yet</div>
             ) : (
               spaces.map((space) => (
-                <Link
+                <div
                   key={space.id}
-                  to="/"
                   className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                  onClick={() => handleNavigateToSpace(space.id)}
                 >
                   <MessageSquare size={14} />
                   <span className="truncate">{space.name}</span>
-                </Link>
+                </div>
               ))
             )}
           </div>
