@@ -1,4 +1,3 @@
-
 import { ChatSpace, ChatMessage, Canvas, Journal } from "../models/chat";
 
 // Local storage keys
@@ -233,3 +232,6 @@ export const getAiResponse = async (message: string): Promise<string> => {
   return responses[Math.floor(Math.random() * responses.length)] + 
     " (This is a simulated AI response to: " + message + ")";
 };
+
+// Make sure Journal is properly exported
+export type { Journal };
