@@ -46,7 +46,7 @@ export function InputPrompt({ onSendMessage }: { onSendMessage?: (message: strin
   };
 
   return (
-    <div className="border rounded-lg p-4 bg-background">
+    <div className="border rounded-lg p-4 bg-background shadow-sm">
       <div className="mb-2 flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Make a plot of...</span>
         <div className="p-1 px-2 bg-muted rounded-md text-xs text-muted-foreground">@DeepTutor</div>

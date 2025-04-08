@@ -148,7 +148,7 @@ const Index = () => {
     <div className="flex min-h-screen bg-background">
       <Sidebar />
       <main className={`flex-1 p-4 md:p-10 ${isMobile ? 'pt-16' : ''}`}>
-        <div className="mx-auto max-w-4xl flex flex-col items-center">
+        <div className="mx-auto max-w-4xl flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-5rem)]">
           <UserGreeting username="ProxyYt" />
           
           {currentSpace && (
@@ -162,7 +162,7 @@ const Index = () => {
           </div>
           
           {currentSpace && currentSpace.messages.length > 0 ? (
-            <div className="w-full mt-6 md:mt-10 mb-6 max-h-[60vh] overflow-y-auto">
+            <div className="w-full mt-6 md:mt-10 mb-6 flex-grow overflow-y-auto">
               {currentSpace.messages.map((message) => (
                 <ChatMessage
                   key={message.id}
@@ -174,7 +174,7 @@ const Index = () => {
               <div ref={messagesEndRef} />
             </div>
           ) : (
-            <div className="w-full mt-6 md:mt-10 text-center text-muted-foreground">
+            <div className="w-full mt-6 md:mt-10 flex-grow flex items-center justify-center text-center text-muted-foreground">
               <p>Start a new conversation!</p>
             </div>
           )}
