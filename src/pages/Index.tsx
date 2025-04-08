@@ -138,7 +138,6 @@ const Index = () => {
 
   const handleViewCanvas = (canvasId: string) => {
     // Navigate to canvas page with this canvas loaded
-    // This could be implemented in a follow-up feature
     toast({
       title: "Canvas Preview",
       description: "Canvas previewing will be implemented soon.",
@@ -200,7 +199,7 @@ const Index = () => {
             </div>
           )}
           
-          <div className="w-full mt-auto">
+          <div className="w-full mt-auto sticky bottom-0 bg-background pt-4 pb-4">
             <InputPrompt onSendMessage={handleSendMessage} />
           </div>
         </div>
