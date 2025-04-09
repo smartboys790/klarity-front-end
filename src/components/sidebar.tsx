@@ -108,14 +108,7 @@ export function Sidebar() {
 
       <div className="p-4 border-b">
         <div className="flex items-center justify-between">
-          <h2 className="font-medium text-lg">Hi, ProxyYt</h2>
-          <div className="flex items-center gap-2">
-            <Link to="/profile">
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User size={18} />
-              </Button>
-            </Link>
-          </div>
+          <h2 className="font-medium text-lg">Klarity</h2>
         </div>
         
         {!isCollapsed && (
