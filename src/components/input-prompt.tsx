@@ -1,11 +1,8 @@
 
 import React, { useState } from 'react';
-import { Send, Loader2, Plus } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Image, File, MapPin } from "lucide-react";
 
 interface InputPromptProps {
   onSendMessage?: (message: string) => void;
@@ -59,58 +56,31 @@ export function InputPrompt({
   };
 
   return (
-    <div className="rounded-lg p-4 bg-[#111827] border border-gray-800 shadow-md">
+    <div className="border rounded-lg p-4 bg-background shadow-sm">
       <div className="mb-2 flex items-center gap-2">
-        <span className="text-sm text-gray-400">Make a plot of...</span>
-        <div className="p-1 px-2 bg-[#1E293B] rounded-md text-xs text-gray-400">@DeepTutor</div>
+        <span className="text-sm text-muted-foreground">Make a plot of...</span>
+        <div className="p-1 px-2 bg-muted rounded-md text-xs text-muted-foreground">@DeepTutor</div>
       </div>
       <Textarea 
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="min-h-[60px] mb-2 resize-none bg-[#1A1F2C] border-gray-700 focus:border-blue-500"
+        className="min-h-[60px] mb-2 resize-none"
         disabled={disabled}
       />
       <div className="flex items-center justify-between">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-              <Plus size={20} />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-2 bg-[#1A1F2C] border-gray-700">
-            <div className="grid gap-1">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="justify-start text-gray-300"
-              >
-                <Image className="mr-2 h-4 w-4" /> Insert Image
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="justify-start text-gray-300"
-              >
-                <File className="mr-2 h-4 w-4" /> Upload File
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="justify-start text-gray-300"
-              >
-                <MapPin className="mr-2 h-4 w-4" /> Share Location
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <button className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
         <div className="flex items-center gap-2">
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             Feynman may make mistakes. Check important info and please report any bugs.
           </p>
           <button 
-            className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
+            className="p-2 bg-primary rounded-lg text-primary-foreground"
             onClick={handleSendMessage}
             disabled={isLoading || !message.trim() || disabled}
           >

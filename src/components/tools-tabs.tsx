@@ -8,12 +8,12 @@ export function ToolsTabs() {
   
   return (
     <Tabs defaultValue="interactive-tools" className="w-full" onValueChange={setActiveTab}>
-      <TabsList className="grid w-full grid-cols-2 bg-[#1A1F2C]">
-        <TabsTrigger value="interactive-tools" className="data-[state=active]:bg-blue-600">Interactive Tools</TabsTrigger>
-        <TabsTrigger value="examples" className="data-[state=active]:bg-blue-600">Examples</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="interactive-tools">Interactive Tools</TabsTrigger>
+        <TabsTrigger value="examples">Examples</TabsTrigger>
       </TabsList>
       <div className="mt-8">
-        <p className="text-center text-gray-400 mb-6">
+        <p className="text-center text-muted-foreground mb-6">
           Learn exactly how you want to alongside Feynman, with every learning tool you might need at your disposal.
         </p>
       </div>
@@ -38,7 +38,7 @@ export function ToolsTabs() {
         />
       </TabsContent>
       <TabsContent value="examples">
-        <div className="text-center text-gray-400">
+        <div className="text-center text-muted-foreground">
           Example content would go here.
         </div>
       </TabsContent>
