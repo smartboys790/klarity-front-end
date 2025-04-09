@@ -10,7 +10,7 @@ export interface ChatMessageProps {
 
 export function ChatMessage({ content, isAi = false, timestamp = new Date() }: ChatMessageProps) {
   return (
-    <div className={`flex gap-3 mb-4 ${isAi ? 'flex-row' : 'flex-row-reverse'}`}>
+    <div className={`flex w-full items-center gap-3 mb-4 ${isAi ? 'flex-row' : 'flex-row-reverse'}`}>
       <div className="flex-shrink-0">
         <Avatar className="w-8 h-8">
           {isAi ? (

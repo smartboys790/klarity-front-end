@@ -234,7 +234,7 @@ const Index = () => {
           )}
           
           {currentSpace && currentSpace.messages.length > 0 ? (
-            <div className="w-full mt-6 md:mt-10 mb-6 flex-grow overflow-y-auto">
+            <div className="w-full mt-6 md:mt-10 mb-100 flex-grow overflow-y-auto"  >
               {currentSpace.messages.map((message) => (
                 <ChatMessage
                   key={message.id}
@@ -284,9 +284,10 @@ const Index = () => {
               </div>
             </div>
           )}
+
           
-          <div className="w-full mt-auto sticky bottom-0 bg-background pt-4 pb-4 border-t">
-            <div className="flex flex-col gap-2">
+          <div className=" flex w-full fixed  bottom-0 bg-background pt-4 pb-4 ">
+            <div className="flex flex-col gap-2 w-full max-w-4xl ">
               <InputPrompt 
                 onSendMessage={handleSendMessage} 
                 placeholder={currentSpace ? "Type your message here..." : "Create a new chat to start messaging"}
