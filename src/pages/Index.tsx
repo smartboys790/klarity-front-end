@@ -10,7 +10,7 @@ import { ChatMessage } from "@/components/chat-message";
 import { addMessageToSpace, createSpace, getAiResponse, getSpaces, getSpace, getCanvases } from "@/services/chat-service";
 import { ChatSpace, Canvas } from "@/models/chat";
 import { useToast } from '@/hooks/use-toast';
-import { Image, Upload, Plus } from "lucide-react";
+import { Image, Upload, Plus, File, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   Dialog, 
@@ -20,8 +20,6 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { CreateItemDialog } from '@/components/create-item-dialog';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -32,8 +30,13 @@ const Index = () => {
   const [currentSpace, setCurrentSpace] = useState<ChatSpace | null>(null);
   const [relatedCanvases, setRelatedCanvases] = useState<Canvas[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showTools, setShowTools] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,6 +52,10 @@ const Index = () => {
       if (targetSpace) {
         setCurrentSpace(targetSpace);
         setShowWelcome(false);
+        // If space has messages, hide the tools
+        if (targetSpace.messages.length > 0) {
+          setShowTools(false);
+        }
         // Load related canvases
         const canvases = getCanvases(targetSpace.id);
         setRelatedCanvases(canvases);
@@ -66,7 +73,12 @@ const Index = () => {
         (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
       )[0];
       setCurrentSpace(mostRecentSpace);
-      setShowWelcome(false);
+      
+      // If space has messages, hide welcome and tools
+      if (mostRecentSpace.messages.length > 0) {
+        setShowWelcome(false);
+        setShowTools(false);
+      }
       
       // Load related canvases
       const canvases = getCanvases(mostRecentSpace.id);
@@ -103,6 +115,7 @@ const Index = () => {
 
     // Hide welcome cards when first message is sent
     setShowWelcome(false);
+    setShowTools(false);
 
     // Add user message
     const userMessage = addMessageToSpace(currentSpace.id, message, false);
@@ -169,6 +182,37 @@ const Index = () => {
       description: "Canvas previewing will be implemented soon.",
     });
   };
+  
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setMediaDialogOpen(true);
+    }
+  };
+  
+  const handleMediaUpload = () => {
+    if (!selectedFile || !currentSpace) return;
+    
+    setUploadingMedia(true);
+    
+    // Simulate upload with a timeout
+    setTimeout(() => {
+      // In a real implementation, you would upload the file to a server
+      // and get a URL back. For now, we'll just create a message with the file name.
+      const message = `[Shared a file: ${selectedFile.name}]`;
+      handleSendMessage(message);
+      
+      setUploadingMedia(false);
+      setMediaDialogOpen(false);
+      setSelectedFile(null);
+      
+      toast({
+        title: "File Shared",
+        description: `File "${selectedFile.name}" has been shared in the chat.`,
+      });
+    }, 1000);
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -183,9 +227,11 @@ const Index = () => {
             </div>
           )}
           
-          <div className="w-full mt-8 md:mt-12">
-            <ToolsTabs />
-          </div>
+          {showTools && (
+            <div className="w-full mt-8 md:mt-12">
+              <ToolsTabs />
+            </div>
+          )}
           
           {currentSpace && currentSpace.messages.length > 0 ? (
             <div className="w-full mt-6 md:mt-10 mb-6 flex-grow overflow-y-auto">
@@ -254,12 +300,36 @@ const Index = () => {
                   </PopoverTrigger>
                   <PopoverContent className="w-48 p-2">
                     <div className="grid gap-1">
-                      <Button variant="ghost" size="sm" className="justify-start">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="justify-start"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
                         <Image className="mr-2 h-4 w-4" /> Insert Image
                       </Button>
-                      <Button variant="ghost" size="sm" className="justify-start">
-                        <Upload className="mr-2 h-4 w-4" /> Upload File
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="justify-start"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <File className="mr-2 h-4 w-4" /> Upload File
                       </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="justify-start"
+                      >
+                        <MapPin className="mr-2 h-4 w-4" /> Share Location
+                      </Button>
+                      <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        className="hidden" 
+                        onChange={handleFileUpload}
+                        accept="image/*,application/pdf,text/plain"
+                      />
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -277,6 +347,41 @@ const Index = () => {
         description="Enter a name for your new chat."
         itemLabel="Chat"
       />
+      
+      <Dialog open={mediaDialogOpen} onOpenChange={setMediaDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Share Media</DialogTitle>
+            <DialogDescription>
+              Preview and share your media in the chat.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex flex-col items-center justify-center p-4 border rounded-md">
+            {selectedFile && (
+              <div className="text-center">
+                <div className="mb-2">
+                  <File size={48} className="mx-auto text-muted-foreground" />
+                </div>
+                <p className="text-sm font-medium">{selectedFile.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {(selectedFile.size / 1024).toFixed(1)} KB
+                </p>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setMediaDialogOpen(false)}>Cancel</Button>
+            <Button 
+              onClick={handleMediaUpload} 
+              disabled={!selectedFile || uploadingMedia}
+            >
+              {uploadingMedia ? "Sharing..." : "Share"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
