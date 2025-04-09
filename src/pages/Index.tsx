@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Sidebar } from "@/components/sidebar";
@@ -29,7 +30,7 @@ const Index = () => {
   const [currentSpace, setCurrentSpace] = useState<ChatSpace | null>(null);
   const [relatedCanvases, setRelatedCanvases] = useState<Canvas[]>([]);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [showTools, setShowTools] = useState(true);
+  const [showTools, setShowTools] = useState(false); // Default to false, only show when needed
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
   const [uploadingMedia, setUploadingMedia] = useState(false);
@@ -51,10 +52,7 @@ const Index = () => {
       if (targetSpace) {
         setCurrentSpace(targetSpace);
         setShowWelcome(false);
-        // If space has messages, hide the tools
-        if (targetSpace.messages.length > 0) {
-          setShowTools(false);
-        }
+        setShowTools(false); // Don't show tools when navigating to an existing space
         // Load related canvases
         const canvases = getCanvases(targetSpace.id);
         setRelatedCanvases(canvases);
@@ -76,6 +74,10 @@ const Index = () => {
       // If space has messages, hide welcome and tools
       if (mostRecentSpace.messages.length > 0) {
         setShowWelcome(false);
+        setShowTools(false);
+      } else {
+        // Only show welcome for empty chats
+        setShowWelcome(true);
         setShowTools(false);
       }
       
@@ -99,6 +101,7 @@ const Index = () => {
     setSpaces(prev => [...prev, newSpace]);
     setCurrentSpace(newSpace);
     setShowWelcome(false);
+    setShowTools(false); // Ensure tools are hidden for new chats
     toast({
       title: "Chat Created",
       description: `New chat "${name}" has been created.`,
@@ -112,7 +115,7 @@ const Index = () => {
       return;
     }
 
-    // Hide welcome cards when first message is sent
+    // Hide welcome and tools when first message is sent
     setShowWelcome(false);
     setShowTools(false);
 
@@ -228,7 +231,7 @@ const Index = () => {
             )}
           </div>
           
-          {/* Main content area with messages */}
+          {/* Main content area with messages - using flex-grow to take all available space */}
           <div className="flex-grow overflow-y-auto px-4 md:px-8 pb-4">
             {showTools && (
               <div className="w-full mt-2 md:mt-4 mb-8">
@@ -290,7 +293,7 @@ const Index = () => {
             )}
           </div>
           
-          {/* Fixed chat input at bottom */}
+          {/* Fixed chat input at bottom with a clear boundary */}
           <div className="w-full px-4 md:px-8 py-4 border-t border-gray-800 bg-[#0A0E1A]">
             <div className="max-w-4xl mx-auto">
               <InputPrompt 
