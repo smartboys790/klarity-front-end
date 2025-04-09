@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Sidebar } from "@/components/sidebar";
@@ -215,125 +214,89 @@ const Index = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-[#0A0E1A] text-white">
       <Sidebar />
-      <main className={`flex-1 p-4 md:p-10 ${isMobile ? 'pt-16' : ''}`}>
-        <div className="mx-auto max-w-4xl flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-5rem)]">
-          <UserGreeting username="ProxyYt" />
-          
-          {currentSpace && (
-            <div className="w-full mt-2 text-xl font-medium">
-              {currentSpace.name}
-            </div>
-          )}
-          
-          {showTools && (
-            <div className="w-full mt-8 md:mt-12">
-              <ToolsTabs />
-            </div>
-          )}
-          
-          {currentSpace && currentSpace.messages.length > 0 ? (
-            <div className="w-full mt-6 md:mt-10 mb-6 flex-grow overflow-y-auto">
-              {currentSpace.messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  content={message.content}
-                  isAi={message.isAi}
-                  timestamp={message.timestamp}
-                />
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-          ) : (
-            <div className="w-full mt-6 md:mt-10 flex-grow flex items-center justify-center">
-              {showWelcome ? (
-                <div className="text-center max-w-md mx-auto">
-                  <h2 className="text-xl font-medium mb-4">Welcome to Praxis</h2>
-                  <p className="mb-8 text-muted-foreground">
-                    Start by creating a new chat or selecting an existing one from the sidebar.
-                  </p>
-                  <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" /> Create New Chat
-                  </Button>
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground">
-                  Start a new conversation!
-                </p>
-              )}
-            </div>
-          )}
-          
-          {relatedCanvases.length > 0 && (
-            <div className="w-full mt-4 mb-4">
-              <h3 className="text-lg font-medium mb-2">Related Canvases</h3>
-              <div className="flex gap-2 flex-wrap">
-                {relatedCanvases.map(canvas => (
-                  <Button 
-                    key={canvas.id} 
-                    variant="outline" 
-                    size="sm"
-                    className="flex items-center gap-1"
-                    onClick={() => handleViewCanvas(canvas.id)}
-                  >
-                    <Image size={14} />
-                    <span className="truncate max-w-[150px]">{canvas.name}</span>
-                  </Button>
-                ))}
+      <main className={`flex-1 ${isMobile ? 'pt-16' : ''} flex flex-col h-screen`}>
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="p-4 md:p-8 flex flex-col">
+            <UserGreeting username="ProxyYt" />
+            
+            {currentSpace && (
+              <div className="w-full mt-2 text-xl font-medium">
+                {currentSpace.name}
               </div>
-            </div>
-          )}
+            )}
+          </div>
           
-          <div className="w-full mt-auto sticky bottom-0 bg-background pt-4 pb-4 border-t">
-            <div className="flex flex-col gap-2">
+          {/* Main content area with messages */}
+          <div className="flex-grow overflow-y-auto px-4 md:px-8 pb-4">
+            {showTools && (
+              <div className="w-full mt-2 md:mt-4 mb-8">
+                <ToolsTabs />
+              </div>
+            )}
+            
+            {/* Chat Messages */}
+            {currentSpace && currentSpace.messages.length > 0 ? (
+              <div className="w-full max-w-4xl mx-auto space-y-4">
+                {currentSpace.messages.map((message) => (
+                  <ChatMessage
+                    key={message.id}
+                    content={message.content}
+                    isAi={message.isAi}
+                    timestamp={message.timestamp}
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            ) : (
+              <div className="flex-grow flex items-center justify-center">
+                {showWelcome ? (
+                  <div className="text-center max-w-md mx-auto">
+                    <h2 className="text-xl font-medium mb-4">Welcome to Praxis</h2>
+                    <p className="mb-8 text-muted-foreground">
+                      Start by creating a new chat or selecting an existing one from the sidebar.
+                    </p>
+                    <Button onClick={() => setCreateDialogOpen(true)}>
+                      <Plus className="mr-2 h-4 w-4" /> Create New Chat
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground">
+                    Start a new conversation!
+                  </p>
+                )}
+              </div>
+            )}
+            
+            {relatedCanvases.length > 0 && (
+              <div className="w-full max-w-4xl mx-auto mt-4 mb-4">
+                <h3 className="text-lg font-medium mb-2">Related Canvases</h3>
+                <div className="flex gap-2 flex-wrap">
+                  {relatedCanvases.map(canvas => (
+                    <Button 
+                      key={canvas.id} 
+                      variant="outline" 
+                      size="sm"
+                      className="flex items-center gap-1"
+                      onClick={() => handleViewCanvas(canvas.id)}
+                    >
+                      <Image size={14} />
+                      <span className="truncate max-w-[150px]">{canvas.name}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Fixed chat input at bottom */}
+          <div className="w-full px-4 md:px-8 py-4 border-t border-gray-800 bg-[#0A0E1A]">
+            <div className="max-w-4xl mx-auto">
               <InputPrompt 
                 onSendMessage={handleSendMessage} 
                 placeholder={currentSpace ? "Type your message here..." : "Create a new chat to start messaging"}
               />
-              <div className="flex justify-end">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className="text-xs">
-                      <Upload className="h-3 w-3 mr-1" /> Add Media
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-48 p-2">
-                    <div className="grid gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="justify-start"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <Image className="mr-2 h-4 w-4" /> Insert Image
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="justify-start"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <File className="mr-2 h-4 w-4" /> Upload File
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="justify-start"
-                      >
-                        <MapPin className="mr-2 h-4 w-4" /> Share Location
-                      </Button>
-                      <input 
-                        type="file" 
-                        ref={fileInputRef} 
-                        className="hidden" 
-                        onChange={handleFileUpload}
-                        accept="image/*,application/pdf,text/plain"
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
             </div>
           </div>
         </div>
@@ -382,6 +345,14 @@ const Index = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        className="hidden" 
+        onChange={handleFileUpload}
+        accept="image/*,application/pdf,text/plain"
+      />
     </div>
   );
 };

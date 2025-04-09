@@ -11,7 +11,7 @@ export function UserHeader() {
   const userProfile = getUserProfile();
   
   return (
-    <div className="fixed top-4 right-4 z-40 flex items-center gap-2">
+    <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
       <ThemeToggle />
       <Link to="/profile">
         <Avatar className="w-8 h-8 cursor-pointer">
