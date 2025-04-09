@@ -4,13 +4,23 @@ import { Send, Loader2 } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
-export function InputPrompt({ onSendMessage }: { onSendMessage?: (message: string) => void }) {
+interface InputPromptProps {
+  onSendMessage?: (message: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+export function InputPrompt({ 
+  onSendMessage,
+  placeholder = "Type your message here...",
+  disabled = false
+}: InputPromptProps) {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || disabled) return;
     
     setIsLoading(true);
     
@@ -55,8 +65,9 @@ export function InputPrompt({ onSendMessage }: { onSendMessage?: (message: strin
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Type your message here..."
+        placeholder={placeholder}
         className="min-h-[60px] mb-2 resize-none"
+        disabled={disabled}
       />
       <div className="flex items-center justify-between">
         <button className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground">
@@ -71,7 +82,7 @@ export function InputPrompt({ onSendMessage }: { onSendMessage?: (message: strin
           <button 
             className="p-2 bg-primary rounded-lg text-primary-foreground"
             onClick={handleSendMessage}
-            disabled={isLoading || !message.trim()}
+            disabled={isLoading || !message.trim() || disabled}
           >
             {isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
           </button>
