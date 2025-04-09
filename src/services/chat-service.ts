@@ -257,32 +257,20 @@ export interface UserProfile {
   avatarUrl: string;
   createdAt: Date;
   updatedAt: Date;
-  chatCount?: number;
-  journalCount?: number;
-  courseCount?: number;
 }
 
 const USER_PROFILE_KEY = 'user-profile';
 
-export const getDefaultUserProfile = (): UserProfile => {
-  const spaces = loadSpaces();
-  const journals = loadJournals();
-  const userCourses = getUserCourses('default-user');
-  
-  return {
-    id: generateId(),
-    name: 'ProxyYt',
-    email: 'proxy@example.com',
-    bio: 'AI enthusiast and continuous learner',
-    interests: ['AI', 'Machine Learning', 'Web Development'],
-    avatarUrl: 'https://avatars.githubusercontent.com/u/12345678',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    chatCount: spaces.length,
-    journalCount: journals.length,
-    courseCount: userCourses.length
-  };
-};
+export const getDefaultUserProfile = (): UserProfile => ({
+  id: generateId(),
+  name: 'ProxyYt',
+  email: 'proxy@example.com',
+  bio: 'AI enthusiast and continuous learner',
+  interests: ['AI', 'Machine Learning', 'Web Development'],
+  avatarUrl: 'https://avatars.githubusercontent.com/u/12345678',
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
 
 export const getUserProfile = (): UserProfile => {
   const profileJson = localStorage.getItem(USER_PROFILE_KEY);
@@ -294,17 +282,10 @@ export const getUserProfile = (): UserProfile => {
   
   try {
     const profile = JSON.parse(profileJson);
-    const spaces = loadSpaces();
-    const journals = loadJournals();
-    const userCourses = getUserCourses('default-user');
-    
     return {
       ...profile,
       createdAt: new Date(profile.createdAt),
-      updatedAt: new Date(profile.updatedAt),
-      chatCount: spaces.length,
-      journalCount: journals.length,
-      courseCount: userCourses.length
+      updatedAt: new Date(profile.updatedAt)
     };
   } catch (e) {
     console.error('Error parsing user profile from localStorage', e);
