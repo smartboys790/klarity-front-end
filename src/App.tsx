@@ -10,6 +10,9 @@ import NotFound from "./pages/NotFound";
 import { UserHeader } from "./components/user-header";
 import JournalsPage from "./pages/JournalsPage";
 import CanvasPage from "./pages/CanvasPage";
+import ProfilePage from "./pages/ProfilePage";
+import TasksPage from "./pages/TasksPage";
+import CoursesPage from "./pages/CoursesPage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +28,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/journals" element={<JournalsPage />} />
             <Route path="/canvas" element={<CanvasPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/courses" element={<CoursesPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
