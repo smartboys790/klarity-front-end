@@ -20,12 +20,14 @@ import {
   User,
   ClipboardList,
   GraduationCap,
-  ChevronLeft
+  ChevronLeft,
+  ChevronLeftIcon
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Dialog } from "@/components/ui/dialog";
 import { SettingsDialog } from "./settings-dialog";
 import { HelpDialog } from "./help-dialog";
 import { PremiumDialog } from "./premium-dialog";
@@ -45,7 +47,6 @@ export function Sidebar() {
   const [createDialogOpen, setCreateDialogOpen] = useState<'space' | 'journal' | null>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const location = useLocation();
   
   const [dialogOpen, setDialogOpen] = useState<string | null>(null);
   const { toast } = useToast();
@@ -67,15 +68,12 @@ export function Sidebar() {
   };
   
   const handleCreateSpace = (name: string) => {
-    const newSpace = createSpace(name);
+    createSpace(name);
     loadSpaces();
     toast({
       title: "Space Created",
       description: `Space "${name}" has been created.`,
     });
-    
-    // Navigate to the new space
-    handleNavigateToSpace(newSpace.id);
   };
   
   const handleNavigateToSpace = (spaceId: string) => {
@@ -91,16 +89,12 @@ export function Sidebar() {
     setIsCollapsed(!isCollapsed);
   };
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-
   const SidebarContent = () => (
     <div className="flex flex-col h-full relative">
       {!isMobile && (
         <button 
           onClick={toggleCollapse}
-          className="absolute -right-3 top-20 bg-primary text-primary-foreground rounded-full p-1 shadow-md z-50"
+          className="absolute -right-3 top-20 bg-primary text-white rounded-full p-1 shadow-md z-50"
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
@@ -120,12 +114,12 @@ export function Sidebar() {
         
         {!isCollapsed && (
           <div className="mt-4 space-y-3">
-            <Link to="/" className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${isActive("/") ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}`}>
+            <Link to="/" className="flex items-center gap-2 p-2 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer">
               <Code size={16} />
               <span>Praxis</span>
               <ChevronRight size={16} className="ml-auto" />
             </Link>
-            <Link to="/canvas" className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${isActive("/canvas") ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}`}>
+            <Link to="/canvas" className="flex items-center gap-2 p-2 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer">
               <PenBox size={16} />
               <span>Open Canvas</span>
             </Link>
@@ -184,7 +178,7 @@ export function Sidebar() {
             {journals.map((journal) => (
               <div
                 key={journal.id}
-                className={`flex items-center gap-2 p-2 text-sm rounded-md cursor-pointer ${location.pathname === '/journals' && location.state?.activeJournalId === journal.id ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}`}
+                className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
                 onClick={() => handleNavigateToJournal(journal.id)}
               >
                 <FileText size={14} />
@@ -230,7 +224,7 @@ export function Sidebar() {
               spaces.map((space) => (
                 <div
                   key={space.id}
-                  className={`flex items-center gap-2 p-2 text-sm rounded-md cursor-pointer ${location.pathname === '/' && location.state?.activeSpaceId === space.id ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}`}
+                  className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
                   onClick={() => handleNavigateToSpace(space.id)}
                 >
                   <MessageSquare size={14} />
@@ -245,12 +239,12 @@ export function Sidebar() {
       {isCollapsed ? (
         <div className="p-4 flex flex-col items-center gap-4">
           <Link to="/tasks">
-            <Button variant={isActive("/tasks") ? "default" : "ghost"} size="icon">
+            <Button variant="ghost" size="icon">
               <ClipboardList size={18} />
             </Button>
           </Link>
           <Link to="/courses">
-            <Button variant={isActive("/courses") ? "default" : "ghost"} size="icon">
+            <Button variant="ghost" size="icon">
               <GraduationCap size={18} />
             </Button>
           </Link>
@@ -271,11 +265,11 @@ export function Sidebar() {
         </div>
       ) : (
         <div className="mt-auto p-4 space-y-2">
-          <Link to="/tasks" className={`flex items-center gap-2 p-2 text-sm rounded-md cursor-pointer ${isActive("/tasks") ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}`}>
+          <Link to="/tasks" className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer">
             <ClipboardList size={16} />
             <span>Tasks</span>
           </Link>
-          <Link to="/courses" className={`flex items-center gap-2 p-2 text-sm rounded-md cursor-pointer ${isActive("/courses") ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"}`}>
+          <Link to="/courses" className="flex items-center gap-2 p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer">
             <GraduationCap size={16} />
             <span>Courses</span>
           </Link>
