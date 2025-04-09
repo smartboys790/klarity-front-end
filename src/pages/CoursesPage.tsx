@@ -68,6 +68,14 @@ const CoursesPage = () => {
     return matchesSearch && matchesDomain;
   });
 
+  // Handle switching to browse tab
+  const handleSwitchToBrowse = () => {
+    const browseTab = document.querySelector('[data-state="inactive"][value="browse"]') as HTMLElement;
+    if (browseTab) {
+      browseTab.click();
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
@@ -204,7 +212,7 @@ const CoursesPage = () => {
                 <div className="text-center py-20">
                   <h3 className="text-lg font-medium mb-2">You haven't enrolled in any courses yet</h3>
                   <p className="text-muted-foreground mb-6">Explore our catalog and start your learning journey</p>
-                  <Button onClick={() => document.querySelector('[data-state="inactive"][value="browse"]')?.click()}>
+                  <Button onClick={handleSwitchToBrowse}>
                     Browse Courses
                   </Button>
                 </div>
