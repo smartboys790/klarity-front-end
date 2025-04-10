@@ -216,10 +216,10 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar />
+      <Sidebar/>
       <main className={`flex-1 p-4 md:p-10 ${isMobile ? 'pt-16' : ''}`}>
         <div className="mx-auto max-w-4xl flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-5rem)]">
-          <UserGreeting username="ProxyYt" />
+          {/* <UserGreeting username="ProxyYt" /> */}
           
           {currentSpace && (
             <div className="w-full mt-2 text-xl font-medium">
