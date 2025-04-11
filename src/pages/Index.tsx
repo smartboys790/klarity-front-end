@@ -265,6 +265,7 @@ const Index = () => {
             )}
           </div>
           
+          {/* Related canvases section */}
           {relatedCanvases.length > 0 && (
             <div className="w-full mt-4 mb-4">
               <h3 className="text-lg font-medium mb-2">Related Canvases</h3>
@@ -285,6 +286,7 @@ const Index = () => {
             </div>
           )}
           
+          {/* Input prompt section - fixed at bottom */}
           <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
             <div className="mx-auto max-w-4xl">
               <InputPrompt 
@@ -340,6 +342,7 @@ const Index = () => {
         </div>
       </main>
       
+      {/* Dialogs */}
       <CreateItemDialog
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
