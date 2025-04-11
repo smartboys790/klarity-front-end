@@ -219,8 +219,6 @@ const Index = () => {
       <Sidebar/>
       <main className={`flex-1 p-4 md:p-10 ${isMobile ? 'pt-16' : ''}`}>
         <div className="mx-auto max-w-4xl flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-5rem)]">
-          {/* <UserGreeting username="ProxyYt" /> */}
-          
           {currentSpace && (
             <div className="w-full mt-2 text-xl font-medium">
               {currentSpace.name}
@@ -233,37 +231,39 @@ const Index = () => {
             </div>
           )}
           
-          {currentSpace && currentSpace.messages.length > 0 ? (
-            <div className="w-full mt-6 md:mt-10 mb-100 flex-grow overflow-y-auto"  >
-              {currentSpace.messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  content={message.content}
-                  isAi={message.isAi}
-                  timestamp={message.timestamp}
-                />
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-          ) : (
-            <div className="w-full mt-6 md:mt-10 flex-grow flex items-center justify-center">
-              {showWelcome ? (
-                <div className="text-center max-w-md mx-auto">
-                  <h2 className="text-xl font-medium mb-4">Welcome to Praxis</h2>
-                  <p className="mb-8 text-muted-foreground">
-                    Start by creating a new chat or selecting an existing one from the sidebar.
+          <div className="w-full mt-6 md:mt-10 mb-24 flex-grow overflow-y-auto">
+            {currentSpace && currentSpace.messages.length > 0 ? (
+              <>
+                {currentSpace.messages.map((message) => (
+                  <ChatMessage
+                    key={message.id}
+                    content={message.content}
+                    isAi={message.isAi}
+                    timestamp={message.timestamp}
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </>
+            ) : (
+              <div className="flex-grow flex items-center justify-center">
+                {showWelcome ? (
+                  <div className="text-center max-w-md mx-auto">
+                    <h2 className="text-xl font-medium mb-4">Welcome to Praxis</h2>
+                    <p className="mb-8 text-muted-foreground">
+                      Start by creating a new chat or selecting an existing one from the sidebar.
+                    </p>
+                    <Button onClick={() => setCreateDialogOpen(true)}>
+                      <Plus className="mr-2 h-4 w-4" /> Create New Chat
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground">
+                    Start a new conversation!
                   </p>
-                  <Button onClick={() => setCreateDialogOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" /> Create New Chat
-                  </Button>
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground">
-                  Start a new conversation!
-                </p>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
           
           {relatedCanvases.length > 0 && (
             <div className="w-full mt-4 mb-4">
@@ -284,15 +284,15 @@ const Index = () => {
               </div>
             </div>
           )}
-
           
-          <div className=" flex w-full fixed  bottom-0 bg-background pt-4 pb-4 ">
-            <div className="flex flex-col gap-2 w-full max-w-4xl ">
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
+            <div className="mx-auto max-w-4xl">
               <InputPrompt 
                 onSendMessage={handleSendMessage} 
                 placeholder={currentSpace ? "Type your message here..." : "Create a new chat to start messaging"}
               />
-              <div className="flex justify-end">
+              
+              <div className="flex justify-end mt-2">
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="text-xs">
